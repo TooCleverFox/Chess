@@ -1,73 +1,33 @@
-# React + TypeScript + Vite
+# ♟️ Chess Game
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A fully functional web-based Chess game built with a focus on game logic, clean UI, and interactive gameplay. This project demonstrates extensive DOM manipulation and coordinate-based logic.
+---
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+* **Complete Chess Set: All standard pieces with their unique movement rules.
+* **Interactive Board: Click-to-move mechanics with visual selection feedback.
+* **Turn-based System: Accurate tracking of White and Black turns.
+* **Visual Feedback: Basic visual feedback for moves.
+* **Responsive Design: Playable on various screen sizes with a polished board layout.
 
-## React Compiler
+---
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+## Tech Stack
 
-## Expanding the ESLint configuration
+| **HTML** |Structure and layout of the board. |
+| **CSS** | Advanced grid layouts, custom chess piece styling, and smooth transitions. |
+| **JavaScript** | Core game engine, matrix-based logic, and DOM manipulation. |
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🧠 Technical Challenges Solved
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+* **Coordinate System: Implemented a matrix-based approach to track piece positions on an $8 \times 8$ grid.
+* **Move Validation: Custom algorithms to calculate legal moves for each piece type (Pawns, Knights, Bishops, etc.)
+* **Event Handling: Efficient use of event listeners to manage player interactions with the board.
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 📸 Preview
+<img width="1230" height="902" alt="image" src="https://github.com/user-attachments/assets/8f8c87f7-c133-41a9-8662-39b419ad0e03" />
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
