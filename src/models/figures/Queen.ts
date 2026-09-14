@@ -20,4 +20,13 @@ export class Queen extends Figure {
 			return true
 		return false
 	}
+
+	canAttack(target: Cell): boolean {
+		if (target.figure?.color === this.color) {
+			return false;
+		}
+		return this.cell.isEmptyVertical(target)
+			|| this.cell.isEmptyHorizontal(target)
+			|| this.cell.isEmptyDiagonal(target);
+	}
 }

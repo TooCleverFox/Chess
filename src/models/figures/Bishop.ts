@@ -16,4 +16,11 @@ export class Bishop extends Figure {
 			return true;
 		return false
 	}
+
+	canAttack(target: Cell): boolean {
+		if (target.figure?.color === this.color) {
+			return false;
+		}
+		return this.cell.isEmptyDiagonal(target);
+	}
 }

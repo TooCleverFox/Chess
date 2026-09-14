@@ -1,13 +1,15 @@
 {
-	"name": "my-app",
+	"name": "chess",
 	"private": true,
-	"version": "0.0.0",
+	"version": "1.0.0",
+	"description": "Chess game built with React, TypeScript and Vite",
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
 		"build": "tsc -b && vite build",
-		"lint": "eslint my-app",
-		"preview": "vite preview"
+		"lint": "eslint .",
+		"preview": "vite preview",
+		"test":"vitest"
 	},
 	"dependencies": {
 		"react": "^19.2.0",
@@ -25,7 +27,8 @@
 		"globals": "^16.5.0",
 		"typescript": "~5.9.3",
 		"typescript-eslint": "^8.46.4",
-		"vite": "npm:rolldown-vite@7.2.5"
+		"vite": "npm:rolldown-vite@7.2.5",
+		"vitest": "^4.1.7"
 	},
 	"overrides": {
 		"vite": "npm:rolldown-vite@7.2.5"

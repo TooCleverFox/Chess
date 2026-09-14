@@ -22,4 +22,13 @@ export class King extends Figure {
 
 		return false;
 	}
+
+	canAttack(target: Cell): boolean {
+		if (target.figure?.color === this.color) {
+			return false;
+		}
+		const dx = Math.abs(target.x - this.cell.x);
+		const dy = Math.abs(target.y - this.cell.y);
+		return dx <= 1 && dy <= 1;
+	}
 }

@@ -1,6 +1,7 @@
 import {Board} from "./Board.ts";
 import  {Colors} from "./Colors.ts";
 import type {Figure} from "./figures/Figure.ts";
+import {Pawn} from "./figures/Pawn.ts";
 
 export class Cell {
 	readonly x: number;
@@ -9,7 +10,6 @@ export class Cell {
 	figure: Figure | null;
 	board: Board;
 	available: boolean;
-	id: number;
 
 	constructor(
 		board: Board,
@@ -24,7 +24,6 @@ export class Cell {
 		this.figure = figure;
 		this.board = board;
 		this.available = false;
-		this.id = Math.random();
 	}
 
 	isEmpty() {
@@ -96,15 +95,19 @@ export class Cell {
 
 	}
 
-	moveFigure(target:Cell){
-		if(this.figure && this.figure?.canMove(target)){
-			if(target.figure){
+	moveFigure(target: Cell) {
+		if (this.figure && this.board.isLegalMove(this, target)) {
+			const movingFigure = this.figure;
+			if (target.figure) {
 				this.addLostFigure(target.figure);
 			}
-			target.setFigure(this.figure)
+			target.setFigure(movingFigure);
 			this.figure = null;
-
-
-}}
+			if (movingFigure instanceof Pawn) {
+				movingFigure.isFirstStep = false;
+			}
+		}
+	}
 }
+
 

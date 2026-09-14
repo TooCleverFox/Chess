@@ -9,11 +9,16 @@ interface LostFigureProps {
 export const LostFigures: FC<LostFigureProps> = ({title, figures}) => {
     return (
         <div className="lost">
-            <h3>{title}</h3>
-            {figures.map(figure =>
-                <div key={figure.id}>
-                    {figure.name} {figure.logo && <img width={20} height={20} src={figure.logo}/>} </div>
-        )}
+            <h2>{title}</h2>
+            <div className="lost-grid">
+            {figures.map((figure, index) => (
+                <div className="lost-item" key={`${figure.name}-${figure.color}-${index}`}>
+                    {figure.logo && (
+                        <img src={figure.logo} alt={figure.name} />
+                    )}
+                </div>
+            ))}
+            </div>
         </div>
     );
 };

@@ -1,74 +1,92 @@
-import type {Player} from "../models/Player.ts";
-import { useEffect, useRef, useState} from "react";
-import {Colors} from "../models/Colors.ts";
+import type { Player } from "../models/Player.ts";
+import { useEffect, useRef, useState } from "react";
+import { Colors } from "../models/Colors.ts";
 
+const INITIAL_TIME = 300;
 
 type TimerProps = {
-    currentPlayer: Player | null;
-    restart: () => void;
-}
+	currentPlayer: Player | null;
+	restart: () => void;
+	gameOver: boolean;
+	onTimeExpired: (winner: Colors) => void;
+};
 
-export const Timer = ({currentPlayer, restart}: TimerProps) => {
-    const [blackTime, setBlackTime] = useState(300)
-    const [whiteTime, setWhiteTime] = useState(300)
-    const [isPaused, setIsPaused] = useState(false);
-    const timer = useRef<null | ReturnType<typeof setInterval>>(null)
+export const Timer = ({
+	currentPlayer,
+	restart,
+	gameOver,
+	onTimeExpired,
+}: TimerProps) => {
+	const [blackTime, setBlackTime] = useState(INITIAL_TIME);
+	const [whiteTime, setWhiteTime] = useState(INITIAL_TIME);
+	const [isPaused, setIsPaused] = useState(false);
+	const timer = useRef<null | ReturnType<typeof setInterval>>(null);
 
-    useEffect(() => {
-        if (isPaused || !currentPlayer) {
-            if (timer.current) {
-                clearInterval(timer.current);
-                timer.current = null;
-            }
-            return;
-        }
-        startTimer();
-        return () => {
-            if (timer.current) {
-                clearInterval(timer.current);
-                timer.current = null;
-            }
-        };
-    }, [currentPlayer, isPaused]);
+	useEffect(() => {
+		if (blackTime === 0 && !gameOver) {
+			onTimeExpired(Colors.WHITE);
+		}
+	}, [blackTime, gameOver, onTimeExpired]);
 
-    function togglePause() {
-        setIsPaused(prev => !prev);
-    }
+	useEffect(() => {
+		if (whiteTime === 0 && !gameOver) {
+			onTimeExpired(Colors.BLACK);
+		}
+	}, [whiteTime, gameOver, onTimeExpired]);
 
-    function startTimer(){
-        if (timer.current){
-            clearInterval(timer.current)
-        }
-        const callback = currentPlayer?.color === Colors.WHITE ? decrementWhiteTimer : decrementBlackTimer
-            timer.current = setInterval(callback, 1000)
+	useEffect(() => {
+		if (isPaused || !currentPlayer || gameOver) {
+			if (timer.current) {
+				clearInterval(timer.current);
+				timer.current = null;
+			}
+			return;
+		}
 
-    }
-    function decrementBlackTimer(){
-        setBlackTime(prev => Math.max(prev - 1, 0));
-    }
+		if (timer.current) {
+			clearInterval(timer.current);
+		}
 
-    function decrementWhiteTimer() {
-        setWhiteTime(prev => Math.max(prev - 1, 0));
-    }
+		const callback =
+			currentPlayer.color === Colors.WHITE
+				? () => setWhiteTime((prev) => Math.max(prev - 1, 0))
+				: () => setBlackTime((prev) => Math.max(prev - 1, 0));
 
-    const handleRestart =() =>{
-        setBlackTime(300)
-        setWhiteTime(300)
-        restart()
-    }
+		timer.current = setInterval(callback, 1000);
 
-    return (
-        <div>
-            <div>
-                <button className={"timer"} onClick={handleRestart}>Restart game</button>
-            </div>
-            <h2>Black - {blackTime}</h2>
-            <h2>White - {whiteTime}</h2>
-            <div>
-            <button className={"timer"}  onClick={togglePause}>
-                {isPaused ? "Continue" : "Pause"}
-            </button>
-            </div>
-        </div>
-    );
+		return () => {
+			if (timer.current) {
+				clearInterval(timer.current);
+				timer.current = null;
+			}
+		};
+	}, [currentPlayer, isPaused, gameOver]);
+
+	function handleRestart() {
+		setBlackTime(INITIAL_TIME);
+		setWhiteTime(INITIAL_TIME);
+		setIsPaused(false);
+		restart();
+	}
+
+	function togglePause() {
+		setIsPaused((prev) => !prev);
+	}
+
+	return (
+		<div>
+			<div>
+				<button className="timer" type="button" onClick={handleRestart}>
+					Restart game
+				</button>
+			</div>
+			<h2>Black — {blackTime}</h2>
+			<h2>White — {whiteTime}</h2>
+			<div>
+				<button className="timer" type="button" onClick={togglePause}>
+					{isPaused ? "Continue" : "Pause"}
+				</button>
+			</div>
+		</div>
+	);
 };

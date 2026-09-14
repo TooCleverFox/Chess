@@ -16,19 +16,34 @@ export class Pawn extends Figure {
 	canMove(target: Cell): boolean {
 		if (!super.canMove(target))
 			return false;
-		const direction = this.cell.figure?.color === Colors.BLACK ? 1 : -1
-		const firstStepDirection = this.cell.figure?.color === Colors.BLACK ? 2 : -2
 
-		if ((target.y === this.cell.y + direction || this.isFirstStep && (target.y === this.cell.y + firstStepDirection))
-			&& target.x === this.cell.x
-			&& this.cell.board.getCell(target.x, target.y).isEmpty()) {
+		const direction = this.color === Colors.BLACK ? 1 : -1;
+
+		if (target.y === this.cell.y + direction
+			&& (target.x === this.cell.x + 1 || target.x === this.cell.x - 1)
+			&& this.cell.isEnemy(target)) {
 			return true;
 		}
-		if (target.y === this.cell.y + direction
-			&& (target.x === this.cell.x + 1 || target.x === this.cell.x -1)
-			&& this.cell.isEnemy(target)){
-			return true
+
+		if (target.x !== this.cell.x || !target.isEmpty()) {
+			return false;
 		}
-			return false
+
+		if (target.y === this.cell.y + direction) {
+			return true;
+		}
+
+		if (this.isFirstStep && target.y === this.cell.y + direction * 2) {
+			const middleY = this.cell.y + direction;
+			return this.cell.board.getCell(this.cell.x, middleY).isEmpty();
+		}
+
+		return false;
+	}
+
+	canAttack(target: Cell): boolean {
+		const direction = this.color === Colors.BLACK ? 1 : -1;
+		return target.y === this.cell.y + direction
+			&& Math.abs(target.x - this.cell.x) === 1;
 	}
 }

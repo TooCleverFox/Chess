@@ -7,13 +7,15 @@ import {Bishop} from "./figures/Bishop.ts";
 import {Knight} from "./figures/Knight.ts";
 import {Rook} from "./figures/Rook.ts";
 import type {Figure} from "./figures/Figure.ts";
+import {FigureNames, type FigureName} from "./figures/Figure.ts";
+import type { SavedMove } from "./SavedMove.ts";
 
 export class Board {
 	cells: Cell[][] = [];
 	lostBlackFigures: Figure[] = [];
 	lostWhiteFigures: Figure[] = [];
 
-	public initlCells() {
+	public initCells() {
 		for (let i = 0; i < 8; i++) {
 			const row: Cell[] = [];
 			for (let j = 0; j < 8; j++) {
@@ -35,14 +37,102 @@ export class Board {
 		return newBoard;
 	}
 
-	public hightlightCells(selectedCell:Cell | null) {
-		for(let i= 0; i < this.cells.length; i++) {
+	public highlightCells(selectedCell: Cell | null) {
+		for (let i = 0; i < this.cells.length; i++) {
 			const row = this.cells[i];
 			for (let j = 0; j < row.length; j++) {
 				const target = row[j];
-				target.available = !!selectedCell?.figure?.canMove(target);
+				target.available = !!(selectedCell && this.isLegalMove(selectedCell, target));
 			}
 		}
+	}
+
+	public getKingCell(color: Colors): Cell | null {
+		for (const row of this.cells) {
+			for (const cell of row) {
+				if (cell.figure?.name === FigureNames.KING && cell.figure.color === color) {
+					return cell;
+				}
+			}
+		}
+		return null;
+	}
+
+	public isCellAttacked(cell: Cell, attackerColor: Colors): boolean {
+		for (const row of this.cells) {
+			for (const boardCell of row) {
+				const figure = boardCell.figure;
+				if (figure?.color === attackerColor && figure.canAttack(cell)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public isInCheck(color: Colors): boolean {
+		const kingCell = this.getKingCell(color);
+		if (!kingCell) {
+			return false;
+		}
+		const attackerColor = color === Colors.WHITE ? Colors.BLACK : Colors.WHITE;
+		return this.isCellAttacked(kingCell, attackerColor);
+	}
+
+	public wouldLeaveKingInCheck(from: Cell, to: Cell): boolean {
+		const figure = from.figure;
+		if (!figure) {
+			return true;
+		}
+
+		const captured = to.figure;
+
+		from.figure = null;
+		to.setFigure(figure);
+
+		const inCheck = this.isInCheck(figure.color);
+
+		to.figure = captured;
+		if (captured) {
+			captured.cell = to;
+		}
+		from.figure = figure;
+		figure.cell = from;
+
+		return inCheck;
+	}
+
+	public isLegalMove(from: Cell, to: Cell): boolean {
+		if (!from.figure?.canMove(to)) {
+			return false;
+		}
+		return !this.wouldLeaveKingInCheck(from, to);
+	}
+
+	public hasLegalMoves(color: Colors): boolean {
+		for (const row of this.cells) {
+			for (const from of row) {
+				if (from.figure?.color !== color) {
+					continue;
+				}
+				for (const targetRow of this.cells) {
+					for (const to of targetRow) {
+						if (this.isLegalMove(from, to)) {
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	public isCheckmate(color: Colors): boolean {
+		return this.isInCheck(color) && !this.hasLegalMoves(color);
+	}
+
+	public isStalemate(color: Colors): boolean {
+		return !this.isInCheck(color) && !this.hasLegalMoves(color);
 	}
 
 	public getCell(x: number, y: number) {
@@ -89,4 +179,84 @@ export class Board {
 		this.addQueens()
 		this.addBishops()
 	}
+
+	public createFigure(
+		name: FigureName,
+		color: Colors,
+		cell: Cell,
+		options?: { isFirstStep?: boolean },
+	): Figure {
+		let figure: Figure;
+		switch (name) {
+			case FigureNames.PAWN: {
+				const pawn = new Pawn(color, cell);
+				if (options?.isFirstStep !== undefined) {
+					pawn.isFirstStep = options.isFirstStep;
+				}
+				figure = pawn;
+				break;
+			}
+			case FigureNames.KING:
+				figure = new King(color, cell);
+				break;
+			case FigureNames.QUEEN:
+				figure = new Queen(color, cell);
+				break;
+			case FigureNames.BISHOP:
+				figure = new Bishop(color, cell);
+				break;
+			case FigureNames.KNIGHT:
+				figure = new Knight(color, cell);
+				break;
+			case FigureNames.ROOK:
+				figure = new Rook(color, cell);
+				break;
+			default:
+				throw new Error(`Unknown figure: ${name}`);
+		}
+		return figure;
+	}
+
+	public addLostFigure(name: FigureName, color: Colors) {
+		const cell = this.findEmptyCell();
+		const figure = this.createFigure(name, color, cell);
+		cell.figure = null;
+		if (color === Colors.BLACK) {
+			this.lostBlackFigures.push(figure);
+		} else {
+			this.lostWhiteFigures.push(figure);
+		}
+	}
+
+	public applyMove(move: SavedMove) {
+		const from = this.getCell(move.fromX, move.fromY);
+		const to = this.getCell(move.toX, move.toY);
+		from.moveFigure(to);
+		if (move.promotion) {
+			this.promotePawn(to, move.promotion);
+		}
+	}
+
+	public promotePawn(cell: Cell, name: FigureName) {
+		if (!cell.figure || cell.figure.name !== FigureNames.PAWN) {
+			return;
+		}
+		const color = cell.figure.color;
+		cell.figure = null;
+		this.createFigure(name, color, cell);
+	}
+
+	private findEmptyCell(): Cell {
+		for (const row of this.cells) {
+			for (const cell of row) {
+				if (cell.isEmpty()) {
+					return cell;
+				}
+			}
+		}
+		throw new Error("No empty cell on board");
+	}
 }
+
+
+export const createBoard = ()=>new Board()

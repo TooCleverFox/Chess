@@ -12,21 +12,19 @@ export const FigureNames = {
 	BISHOP: "Bishop",
 } as const;
 
-type FigureName = (typeof FigureNames)[keyof typeof FigureNames];
+export type FigureName = (typeof FigureNames)[keyof typeof FigureNames];
 
 export class Figure {
 	color: Colors;
 	logo: typeof logo | null;
 	cell: Cell;
 	name: FigureName;
-	id: number;
 
 	constructor(color: typeof this.color, cell: typeof this.cell, logo: typeof this.logo) {
 		this.color = color;
 		this.cell = cell;
 		this.cell.figure = this;
 		this.name = FigureNames.FIGURE;
-		this.id = Math.random();
 		this.logo = logo
 	}
 
@@ -36,5 +34,12 @@ export class Figure {
 		if(target.figure?.name === FigureNames.KING)
 			return false;
 		return true;
+	}
+
+	canAttack(target: Cell): boolean {
+		if (target.figure?.color === this.color) {
+			return false;
+		}
+		return false;
 	}
 }
