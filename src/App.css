@@ -266,6 +266,7 @@ h2{
 
 .game-over-modal h2 {
 	margin: 0 0 16px;
+	color: var(--color-bg);
 }
 
 .game-over-message {
