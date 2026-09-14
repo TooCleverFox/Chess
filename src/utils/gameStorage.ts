@@ -1,6 +1,8 @@
 import { Board } from "../models/Board.ts";
 import type { SavedMove } from "../models/SavedMove.ts";
 
+export type { SavedMove } from "../models/SavedMove.ts";
+
 const STORAGE_KEY = "chess-saved-moves";
 
 export function saveMoves(moves: SavedMove[]): void {
