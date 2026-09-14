@@ -2,6 +2,8 @@
 
 A browser-based chess game built with **React, TypeScript and Vite**.
 
+### 🎮 [Play Chess online →](https://toocleverfox.github.io/Chess/)
+
 ## ✨ Features
 
 * Standard chess board and piece movement
