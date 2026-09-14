@@ -18,7 +18,6 @@ A browser-based chess game built with **React, TypeScript and Vite**.
 * React
 * TypeScript
 * Vite
-* Vitest
 
 ## 🏗️ Architecture
 
