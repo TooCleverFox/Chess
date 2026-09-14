@@ -1,33 +1,74 @@
-# ♟️ Chess Game
+# ♟️ Chess
 
-A fully functional web-based Chess game built with a focus on game logic, clean UI, and interactive gameplay. This project demonstrates extensive DOM manipulation and coordinate-based logic.
----
+A browser-based chess game built with **React, TypeScript and Vite**.
 
-## Features
+## ✨ Features
 
-* **Complete Chess Set: All standard pieces with their unique movement rules.
-* **Interactive Board: Click-to-move mechanics with visual selection feedback.
-* **Turn-based System: Accurate tracking of White and Black turns.
-* **Visual Feedback: Basic visual feedback for moves.
-* **Responsive Design: Playable on various screen sizes with a polished board layout.
+* Standard chess board and piece movement
+* Capturing pieces
+* Check and checkmate detection
+* Stalemate detection
+* King-safety validation
+* Pawn promotion
+* Player timer
+* Game saving and restoring
 
----
+## 🛠️ Tech Stack
 
-## Tech Stack
+* React
+* TypeScript
+* Vite
+* Vitest
 
-| **HTML** |Structure and layout of the board. |
-| **CSS** | Advanced grid layouts, custom chess piece styling, and smooth transitions. |
-| **JavaScript** | Core game engine, matrix-based logic, and DOM manipulation. |
+## 🏗️ Architecture
 
----
+The chess logic is separated from the React UI.
 
-## 🧠 Technical Challenges Solved
+The `Board` class manages the game state and rules, while each chess piece has its own class with movement and attack logic.
 
-* **Coordinate System: Implemented a matrix-based approach to track piece positions on an $8 \times 8$ grid.
-* **Move Validation: Custom algorithms to calculate legal moves for each piece type (Pawns, Knights, Bishops, etc.)
-* **Event Handling: Efficient use of event listeners to manage player interactions with the board.
+```text
+Board
+ ├── Cell
+ └── Figures
+      ├── Pawn
+      ├── Rook
+      ├── Knight
+      ├── Bishop
+      ├── Queen
+      └── King
+```
+
+React components handle rendering and user interaction.
+
+## 🚀 Getting Started
+
+```bash
+npm install
+npm run dev
+```
+
+Run tests:
+
+```bash
+npm run test
+```
+
+Build the project:
+
+```bash
+npm run build
+```
+
+## 📌 Future Improvements
+
+* Castling
+* En passant
+* Threefold repetition
+* Fifty-move rule
+* Online multiplayer
 ---
 
 ## 📸 Preview
-<img width="1230" height="902" alt="image" src="https://github.com/user-attachments/assets/8f8c87f7-c133-41a9-8662-39b419ad0e03" />
+<img width="1466" height="779" alt="image" src="https://github.com/user-attachments/assets/b0867c70-7cda-4469-b118-9e9d953c22e9"
+/>
 
